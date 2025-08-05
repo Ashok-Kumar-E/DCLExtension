@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Contacx Matrix</title>
+	<style>
+		:root {
+			--background-dark: #1e2640;
+			--surface-dark: #283650;
+			--text-primary: #ffffff;
+			--gradient-primary: #6439ff;
+			--gradient-secondary: #1e2640;
+			--gradient-accent: #383f52;
+			--gradient-save: #1e2640;
+			--gradient-cancel: #1e2640;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			padding: 20px;
+			background-color: var(--background-dark);
+			color: var(--text-primary);
+			box-sizing: border-box;
+		}
+
+		.container {
+			width: 95%;
+			max-width: 1600px;
+			margin: 30px auto;
+			background: var(--gradient-secondary);
+			border-radius: 25px;
+			box-shadow: 0 30px 60px rgba(39, 99, 245, 0.4), 0 0 20px rgba(39, 99, 245, 0.2);
+			overflow: hidden;
+			transform-style: preserve-3d;
+			animation: container-intro 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			border: 2px solid rgba(39, 99, 245, 0.8);
+			will-change: transform, opacity;
+			padding: 20px;
+		}
+
+
+		.vendor-name-group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 20px;
+			padding: 0 15px;
+		}
+
+		.vendor-name-group label {
+			margin-bottom: 5px;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: 700;
+			font-size: 1.5em;
+			color: var(--gradient-primary);
+		}
+
+		.vendor-name-group input {
+			padding: 8px 10px;
+			background-color: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(39, 99, 245, 0.5);
+			color: var(--text-primary);
+			border-radius: 5px;
+			cursor: default;
+			font-size: 1.3em;
+			font-weight: 600;
+			width: 100%;
+		}
+
+		.vendor-name-group input:read-only {
+			background-color: rgba(239, 239, 239, 0.3);
+		}
+
+		.vendor-display {
+			text-align: center;
+			font-size: 1.5em;
+			margin-bottom: 20px;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			color: var(--text-primary);
+		}
+
+		@keyframes container-intro {
+			0% {
+				opacity: 0;
+				transform: scale(0.9) rotateX(-120deg);
+			}
+
+			100% {
+				opacity: 1;
+				transform: scale(1) rotateX(0);
+			}
+		}
+
+		.table-wrapper {
+			max-height: 70vh;
+			overflow-y: auto;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			border-radius: 25px;
+			overflow: hidden;
+		}
+
+
+		thead {
+			position: sticky;
+			top: 0;
+			z-index: 10;
+			background: var(--gradient-primary);
+		}
+
+		thead th {
+			padding: 15px;
+			text-align: center;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: 700;
+		}
+
+		tbody tr:nth-child(even) {
+			background: rgba(255, 255, 255, 0.05);
+		}
+
+		tbody tr:hover {
+			background: rgba(255, 255, 255, 0.1);
+			transform: scale(1.01) translateZ(10px);
+			z-index: 5;
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+		}
+
+		tbody td {
+			padding: 15px 10px;
+			text-align: center;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			color: var(--text-primary);
+			transition: all 0.3s ease;
+		}
+
+		.toggle-cell {
+			cursor: pointer;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.toggle-cell::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: var(--gradient-accent);
+			transform: scaleX(0);
+			transform-origin: left;
+			transition: transform 0.3s ease;
+			z-index: 1;
+			opacity: 0.5;
+		}
+
+		.toggle-cell.active::after {
+			transform: scaleX(1);
+		}
+
+		.button-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 20px;
+			margin-top: 30px;
+		}
+
+		.btn {
+			display: inline-block;
+			width: 200px;
+			padding: 15px 25px;
+			color: var(--text-primary);
+			border: none;
+			border-radius: 50px;
+			font-weight: 700;
+			letter-spacing: 3px;
+			cursor: pointer;
+			transition: all 0.4s ease;
+			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+			font-family: 'Orbitron', sans-serif;
+			text-transform: uppercase;
+			position: relative;
+			overflow: hidden;
+			will-change: transform, box-shadow;
+		}
+
+		#update-btn {
+			background: var(--gradient-primary);
+			box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4);
+		}
+
+		#quick-send-btn {
+			background: var(--gradient-primary);
+			box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4);
+		}
+
+		#edit-send-btn {
+			background: var(--gradient-primary);
+			box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4);
+		}
+
+		#cancel-btn {
+			background: var(--gradient-primary);
+			box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4);
+		}
+
+		.btn::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+			transition: all 0.6s ease;
+			will-change: left;
+		}
+
+		.btn:hover::before {
+			left: 100%;
+		}
+
+		.btn:hover {
+			transform: translateY(-5px);
+		}
+
+		.btn:active {
+			transform: scale(0.95);
+		}
+
+		.email-popup {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.8);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+			backdrop-filter: blur(5px);
+		}
+
+		.email-form {
+			background: var(--surface-dark);
+			padding: 30px;
+			border-radius: 15px;
+			width: 80%;
+			max-width: 800px;
+			max-height: 80vh;
+			overflow-y: auto;
+			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+			border: 2px solid var(--gradient-primary);
+		}
+
+		.form-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			padding-bottom: 10px;
+		}
+
+		.form-title {
+			font-size: 1.8em;
+			color: var(--text-primary);
+			font-weight: 700;
+			letter-spacing: 2px;
+		}
+
+		.close-btn {
+			background: none;
+			border: none;
+			color: var(--text-primary);
+			font-size: 1.5em;
+			cursor: pointer;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 8px;
+			color: var(--text-primary);
+			font-weight: 600;
+			letter-spacing: 1px;
+		}
+
+		.email-recipient-group {
+			margin-bottom: 15px;
+		}
+
+		.recipient-input-container {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 5px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			padding: 5px 10px;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			min-height: 40px;
+		}
+
+		.recipient-chips {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 5px;
+		}
+
+		.recipient-chip {
+			background: var(--gradient-primary);
+			border-radius: 15px;
+			padding: 4px 10px 4px 10px;
+			display: flex;
+			align-items: center;
+			margin: 2px;
+		}
+
+		.recipient-chip-text {
+			font-size: 0.9em;
+			color: var(--text-primary);
+			margin-right: 5px;
+		}
+
+		.recipient-chip-remove {
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.2);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--text-primary);
+			font-size: 0.8em;
+			cursor: pointer;
+			line-height: 1;
+		}
+
+		.recipient-input {
+			background: transparent;
+			border: none;
+			color: var(--text-primary);
+			padding: 8px;
+			flex-grow: 1;
+			min-width: 150px;
+			outline: none;
+		}
+
+		.email-input {
+			width: 100%;
+			padding: 12px;
+			border-radius: 8px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			background: rgba(255, 255, 255, 0.05);
+			color: var(--text-primary);
+			font-size: 1em;
+		}
+
+		.email-input-readonly {
+			background-color: rgba(239, 239, 239, 0.3);
+			cursor: not-allowed;
+		}
+
+		.email-textarea {
+			width: 100%;
+			padding: 12px;
+			border-radius: 8px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			background: rgba(255, 255, 255, 0.05);
+			color: var(--text-primary);
+			font-size: 1em;
+			min-height: 200px;
+			resize: vertical;
+		}
+
+		.pagination-container {
+			display: flex;
+			justify-content: center;
+			margin: 20px 0;
+			align-items: center;
+			user-select: none;
+			background: var(--surface-dark);
+			border-radius: 20px;
+			padding: 5px 10px;
+		}
+
+		.pagination-btn {
+			background: transparent;
+			color: var(--text-primary);
+			border: none;
+			min-width: 36px;
+			height: 36px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 2px;
+			cursor: pointer;
+			font-size: 14px;
+			transition: all 0.2s ease;
+		}
+
+		.pagination-btn:hover {
+			background: rgba(100, 57, 255, 0.3);
+		}
+
+		.pagination-btn.active {
+			background: var(--gradient-primary, #6439ff);
+			color: white;
+			font-weight: bold;
+		}
+
+		.pagination-arrow {
+			background: transparent;
+			color: var(--text-primary);
+			border: none;
+			width: 36px;
+			height: 36px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			margin: 0 5px;
+			transition: all 0.2s ease;
+		}
+
+		.pagination-arrow:hover {
+			background: rgba(100, 57, 255, 0.3);
+		}
+
+		.pagination-arrow.disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		.pagination-arrow.disabled:hover {
+			background: transparent;
+		}
+
+		.pagination-ellipsis {
+			color: var(--text-primary);
+			margin: 0 5px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#pagination-numbers {
+			display: flex;
+			align-items: center;
+		}
+
+		.form-footer {
+			display: flex;
+			justify-content: flex-end;
+			gap: 15px;
+			margin-top: 20px;
+		}
+
+		.form-btn {
+			padding: 12px 25px;
+			border: none;
+			border-radius: 30px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.send-email-btn {
+			background: var(--gradient-primary);
+			color: var(--text-primary);
+		}
+
+		.cancel-email-btn {
+			background: rgba(255, 255, 255, 0.1);
+			color: var(--text-primary);
+		}
+
+		.loading-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 2000;
+		}
+
+		.loading-spinner {
+			width: 50px;
+			height: 50px;
+			border: 5px solid rgba(255, 255, 255, 0.3);
+			border-radius: 50%;
+			border-top-color: var(--gradient-primary);
+			animation: spin 1s ease-in-out infinite;
+		}
+
+		.custom-alert-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 2500;
+			backdrop-filter: blur(5px);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.custom-alert-container {
+			background: var(--surface-dark);
+			width: 90%;
+			max-width: 400px;
+			border-radius: 15px;
+			padding: 25px;
+			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(39, 99, 245, 0.3);
+			border: 2px solid var(--gradient-primary);
+			transform: scale(0.8);
+			opacity: 0;
+			transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
+
+		.custom-alert-icon {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 20px;
+		}
+
+		.custom-alert-icon svg {
+			width: 60px;
+			height: 60px;
+		}
+
+		.success-icon {
+			stroke: #4CAF50;
+			stroke-width: 2;
+			fill: none;
+		}
+
+		.error-icon {
+			stroke: #F44336;
+			stroke-width: 2;
+			fill: none;
+		}
+
+		.info-icon {
+			stroke: #2196F3;
+			stroke-width: 2;
+			fill: none;
+		}
+
+		.warning-icon {
+			stroke: #FFC107;
+			stroke-width: 2;
+			fill: none;
+		}
+
+		.custom-alert-title {
+			color: var(--text-primary);
+			font-size: 1.5em;
+			text-align: center;
+			margin-bottom: 15px;
+			font-weight: 600;
+		}
+
+		.custom-alert-message {
+			color: var(--text-primary);
+			text-align: center;
+			margin-bottom: 25px;
+			font-size: 1.1em;
+			line-height: 1.5;
+		}
+
+		.custom-alert-buttons {
+			display: flex;
+			justify-content: center;
+		}
+
+		.custom-alert-button {
+			padding: 12px 25px;
+			border: none;
+			border-radius: 30px;
+			font-weight: 600;
+			cursor: pointer;
+			background: var(--gradient-primary);
+			color: var(--text-primary);
+			box-shadow: 0 10px 20px rgba(100, 57, 255, 0.3);
+			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.custom-alert-button::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+			transition: all 0.6s ease;
+		}
+
+		.custom-alert-button:hover::before {
+			left: 100%;
+		}
+
+		.custom-alert-button:hover {
+			transform: translateY(-3px);
+		}
+
+		.custom-alert-button:active {
+			transform: scale(0.95);
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		.loading-text {
+			color: var(--text-primary);
+			margin-top: 15px;
+			font-size: 1.2em;
+		}
+
+		@media screen and (max-width: 768px) {
+			.button-container {
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			.btn {
+				width: 100%;
+				max-width: 300px;
+			}
+
+			.email-form {
+				width: 95%;
+				padding: 20px;
+			}
+		}
+
+		@keyframes alert-pulse {
+			0% {
+				box-shadow: 0 0 0 0 rgba(100, 57, 255, 0.7);
+			}
+
+			70% {
+				box-shadow: 0 0 0 15px rgba(100, 57, 255, 0);
+			}
+
+			100% {
+				box-shadow: 0 0 0 0 rgba(100, 57, 255, 0);
+			}
+		}
+
+		@keyframes check-animation {
+			0% {
+				stroke-dashoffset: 100;
+			}
+
+			100% {
+				stroke-dashoffset: 0;
+			}
+		}
+
+		.check-circle {
+			stroke-dasharray: 100;
+			stroke-dashoffset: 100;
+			animation: check-animation 1s forwards 0.5s;
+		}
+
+		.success-alert .custom-alert-container {
+			animation: alert-pulse 2s infinite;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="vendor-name-group">
+			<label for="vendor-name">Customer Name</label>
+			<input type="text" id="vendor-name" readonly>
+		</div>
+		<div id="module-display" class="vendor-display"></div>
+
+		<div class="table-wrapper">
+			<table>
+				<thead id="dynamic-header">
+				</thead>
+				<tbody id="table-body">
+				</tbody>
+			</table>
+		</div>
+		<div class="button-container">
+			<button id="update-btn" class="btn">Update</button>
+			<button id="quick-send-btn" class="btn">Quick Send</button>
+			<button id="edit-send-btn" class="btn">Edit & Send Mail</button>
+			<button id="cancel-btn" class="btn">Clear Changes</button>
+		</div>
+	</div>
+
+	<div id="email-popup" class="email-popup">
+		<div class="email-form">
+			<div class="form-header">
+				<div class="form-title" id="email-form-title">Send Email</div>
+				<button class="close-btn" id="close-popup">&times;</button>
+			</div>
+			<div class="form-group">
+				<label for="from-email">From</label>
+				<input class="email-input" id="from-email" required>
+			</div>
+			<div class="form-group email-recipient-group">
+				<label>Send To</label>
+				<div class="recipient-input-container">
+					<div class="recipient-chips" id="to-recipients"></div>
+					<input type="email" class="recipient-input" id="to-email-input" placeholder="Add recipient">
+				</div>
+			</div>
+			<div class="form-group email-recipient-group">
+				<label>Cc</label>
+				<div class="recipient-input-container">
+					<div class="recipient-chips" id="cc-recipients"></div>
+					<input type="email" class="recipient-input" id="cc-email-input" placeholder="Add Cc">
+				</div>
+			</div>
+			<div class="form-group email-recipient-group">
+				<label>Bcc</label>
+				<div class="recipient-input-container">
+					<div class="recipient-chips" id="bcc-recipients"></div>
+					<input type="email" class="recipient-input" id="bcc-email-input" placeholder="Add Bcc">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="email-subject">Subject</label>
+				<input type="text" id="email-subject" class="email-input" required>
+			</div>
+			<div class="form-group">
+				<label for="email-body">Message</label>
+				<textarea id="email-body" class="email-textarea" required></textarea>
+			</div>
+			<div class="form-footer">
+				<button class="form-btn cancel-email-btn" id="cancel-email">Cancel</button>
+				<button class="form-btn send-email-btn" id="send-email">Send</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="loading-overlay" id="loading-overlay">
+		<div>
+			<div class="loading-spinner"></div>
+			<div class="loading-text">Sending email...</div>
+		</div>
+	</div>
+
+	<div class="custom-alert-overlay" id="custom-alert-overlay">
+		<div class="custom-alert-container" id="custom-alert-container">
+			<div class="custom-alert-icon" id="custom-alert-icon">
+			</div>
+			<div class="custom-alert-title" id="custom-alert-title"></div>
+			<div class="custom-alert-message" id="custom-alert-message"></div>
+			<div class="custom-alert-buttons">
+				<button class="custom-alert-button" id="custom-alert-button">OK</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://js.zohostatic.com/zohofinance/v1/zf_sdk.js"></script>
+	<script>
+		ZFAPPS.extension.init().then(async function (App) {
+			function setupPagination() {
+				const ROWS_PER_PAGE = 5;
+				let currentPage = 1;
+				const tableBody = document.getElementById("table-body");
+				const rows = tableBody.querySelectorAll("tr");
+				const totalPages = Math.ceil(rows.length / ROWS_PER_PAGE);
+
+				const paginationContainer = document.createElement('div');
+				paginationContainer.className = 'pagination-container';
+
+				const prevButton = document.createElement('button');
+				prevButton.className = 'pagination-arrow prev-page';
+				prevButton.id = 'prev-page';
+				prevButton.innerHTML = `
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<polyline points="15 18 9 12 15 6"></polyline>
+				</svg>
+				`;
+				paginationContainer.appendChild(prevButton);
+
+				const paginationNumbers = document.createElement('div');
+				paginationNumbers.id = 'pagination-numbers';
+				paginationContainer.appendChild(paginationNumbers);
+
+				const nextButton = document.createElement('button');
+				nextButton.className = 'pagination-arrow next-page';
+				nextButton.id = 'next-page';
+				nextButton.innerHTML = `
+    			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      			<polyline points="9 18 15 12 9 6"></polyline>
+    			</svg>
+  				`;
+				paginationContainer.appendChild(nextButton);
+
+				const tableWrapper = document.querySelector('.table-wrapper');
+				const buttonContainer = document.querySelector('.button-container');
+				tableWrapper.parentNode.insertBefore(paginationContainer, buttonContainer);
+
+				function renderPaginationNumbers() {
+					paginationNumbers.innerHTML = '';
+
+					prevButton.classList.toggle('disabled', currentPage === 1);
+					nextButton.classList.toggle('disabled', currentPage === totalPages);
+
+					let startPage = Math.max(1, currentPage - 2);
+					let endPage = Math.min(totalPages, currentPage + 2);
+
+					if (currentPage <= 3) {
+						endPage = Math.min(5, totalPages);
+					} else if (currentPage >= totalPages - 2) {
+						startPage = Math.max(1, totalPages - 4);
+					}
+
+					if (startPage > 1) {
+						const pageButton = createPageButton(1);
+						paginationNumbers.appendChild(pageButton);
+
+						if (startPage > 2) {
+							const ellipsis = document.createElement('span');
+							ellipsis.className = 'pagination-ellipsis';
+							ellipsis.textContent = '...';
+							paginationNumbers.appendChild(ellipsis);
+						}
+					}
+
+					for (let i = startPage; i <= endPage; i++) {
+						const pageButton = createPageButton(i);
+						paginationNumbers.appendChild(pageButton);
+					}
+
+					if (endPage < totalPages) {
+						if (endPage < totalPages - 1) {
+							const ellipsis = document.createElement('span');
+							ellipsis.className = 'pagination-ellipsis';
+							ellipsis.textContent = '...';
+							paginationNumbers.appendChild(ellipsis);
+						}
+
+						const pageButton = createPageButton(totalPages);
+						paginationNumbers.appendChild(pageButton);
+					}
+				}
+
+				function createPageButton(pageNum) {
+					const button = document.createElement('button');
+					button.className = 'pagination-btn';
+					button.textContent = pageNum;
+
+					if (pageNum === currentPage) {
+						button.classList.add('active');
+					}
+
+					button.addEventListener('click', () => {
+						currentPage = pageNum;
+						showCurrentPage();
+						renderPaginationNumbers();
+					});
+
+					return button;
+				}
+
+				function showCurrentPage() {
+					const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
+					const endIndex = startIndex + ROWS_PER_PAGE;
+
+					rows.forEach((row, index) => {
+						row.style.display = (index >= startIndex && index < endIndex) ? '' : 'none';
+					});
+				}
+
+				prevButton.addEventListener('click', () => {
+					if (currentPage > 1) {
+						currentPage--;
+						showCurrentPage();
+						renderPaginationNumbers();
+					}
+				});
+
+				nextButton.addEventListener('click', () => {
+					if (currentPage < totalPages) {
+						currentPage++;
+						showCurrentPage();
+						renderPaginationNumbers();
+					}
+				});
+
+				showCurrentPage();
+				renderPaginationNumbers();
+			}
+
+			ZFAPPS.invoke('RESIZE', { width: '1100px', height: '685px' })
+				.then(() => {
+					// console.log('Popup Opened');
+				});
+
+			const MODULE_CONFIGS = {
+				'estimate': {
+					displayName: 'Estimates',
+					headers: ['Person Name', 'Person Email', 'Phone Number', 'Estimates'],
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_estimates']
+				},
+				'salesorder': {
+					displayName: 'Sales Orders',
+					headers: ['Person Name', 'Person Email', 'Phone Number', 'Sales Order'],
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_sales_orders']
+				},
+				'invoice': {
+					displayName: 'Invoices',
+					headers: ['Person Name', 'Person Email', 'Phone Number', 'Invoices'],
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_invoices']
+				},
+				'creditnote': {
+					displayName: 'Credit Notes',
+					headers: ['Person Name', 'Person Email', 'Phone Number', 'Credit Notes'],
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_credit_notes']
+				}
+			};
+
+			function getModuleApiEndpoint(module) {
+				const endpointMap = {
+					'estimate': 'estimates',
+					'salesorder': 'salesorders',
+					'invoice': 'invoices',
+					'creditnote': 'creditnotes'
+				};
+
+				return endpointMap[module] || (module + 's');
+			}
+
+			let orgId;
+			let userName;
+			let userEmail;
+			let orgEndpoint;
+			let currentModule;
+			let currentModuleConfig;
+			let customerId;
+			let vendorName;
+			let moduleRecordId;
+			let jsonData;
+			let modifiedRecords = {};
+			let originalRecords = {};
+			let moduleNumber;
+			let loadingOverlay = document.getElementById('loading-overlay');
+
+			const customAlert = {
+				overlay: document.getElementById('custom-alert-overlay'),
+				container: document.getElementById('custom-alert-container'),
+				icon: document.getElementById('custom-alert-icon'),
+				title: document.getElementById('custom-alert-title'),
+				message: document.getElementById('custom-alert-message'),
+				button: document.getElementById('custom-alert-button'),
+
+				icons: {
+					success: `<svg viewBox="0 0 24 24" class="success-icon"><circle cx="12" cy="12" r="10"></circle><polyline class="check-circle" points="8 12 11 15 16 9"></polyline></svg>`,
+					error: `<svg viewBox="0 0 24 24" class="error-icon"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+					info: `<svg viewBox="0 0 24 24" class="info-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>`,
+					warning: `<svg viewBox="0 0 24 24" class="warning-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12" y2="17"></line></svg>`
+				},
+
+				show(type, title, message, callback) {
+					this.icon.innerHTML = this.icons[type] || this.icons.info;
+					this.title.textContent = title || '';
+					this.message.textContent = message || '';
+
+					this.button.onclick = () => {
+						this.hide();
+						if (typeof callback === 'function') callback();
+					};
+
+					this.overlay.style.display = 'flex';
+					setTimeout(() => {
+						this.overlay.style.opacity = '1';
+						this.container.style.transform = 'scale(1)';
+						this.container.style.opacity = '1';
+					}, 10);
+				},
+
+				hide() {
+					this.container.style.transform = 'scale(0.8)';
+					this.container.style.opacity = '0';
+					this.overlay.style.opacity = '0';
+					setTimeout(() => {
+						this.overlay.style.display = 'none';
+					}, 300);
+				},
+
+				success(message, callback) {
+					this.show('success', 'Success', message, callback);
+				},
+
+				error(message, callback) {
+					this.show('error', 'Error', message, callback);
+				},
+
+				info(message, callback) {
+					this.show('info', 'Information', message, callback);
+				},
+
+				warning(message, callback) {
+					this.show('warning', 'Warning', message, callback);
+				}
+			};
+
+			window.alert = function (message) {
+				customAlert.info(message);
+			};
+
+			await ZFAPPS.get('organization').then(function (data) {
+				orgId = data.organization.organization_id;
+				orgEndpoint = data.organization.api_root_endpoint;
+			}).catch(function (err) {
+				console.log("Organization Id Error : ", err);
+				customAlert.error("Failed to fetch organization data");
+			});
+
+			await ZFAPPS.get('user').then(function (data) {
+				userName = data.user.name;
+				userEmail = data.user.email;
+			}).catch(function (err) {
+				console.error("Error fetching user:", err);
+			});
+
+
+			for (const module of ['estimate', 'salesorder', 'invoice', 'creditnote']) {
+				try {
+					const data = await ZFAPPS.get(module);
+					currentModule = module;
+					currentModuleConfig = MODULE_CONFIGS[module];
+
+					if (data) {
+						customerId = data[module].customer_id;
+						vendorName = data[module].customer_name;
+						moduleRecordId = data[module][module + "_id"];
+						moduleNumber = data[module][module + "_number"];
+						break;
+					}
+				} catch (err) {
+					// console.log(`Error fetching ${module}:`, err);
+				}
+			}
+
+			if (!currentModule) {
+				customAlert.error('Could not determine current module');
+				return;
+			}
+
+			const dynamicHeader = document.getElementById('dynamic-header');
+			dynamicHeader.innerHTML = currentModuleConfig.headers.map(header =>
+				`<th>${header}</th>`
+			).join('');
+
+			const moduleDisplay = document.getElementById('module-display');
+			moduleDisplay.textContent = currentModuleConfig.displayName;
+			const vendorNameInput = document.getElementById("vendor-name");
+			vendorNameInput.value = vendorName;
+
+			const options = {
+				url: `${orgEndpoint}/cm__com_i3uqdn_customer_contact_matrix?organization_id=${orgId}`,
+				method: "GET",
+				url_query: [{
+					key: 'cf__com_i3uqdn_customer',
+					value: customerId
+				}],
+				connection_link_name: 'zohobookscontacxmatrix'
+			};
+
+			try {
+				const response = await ZFAPPS.request(options);
+				const responseJSON = JSON.parse(response.data.body);
+				jsonData = responseJSON;
+
+				const tableBody = document.getElementById("table-body");
+
+				if (!jsonData.module_records || jsonData.module_records.length === 0) {
+					tableBody.innerHTML = `<tr><td colspan="${currentModuleConfig.headers.length}">No records found</td></tr>`;
+					return;
+				}
+
+				function createTableRow(record) {
+					originalRecords[record.module_record_id] = originalRecords[record.module_record_id] || {};
+
+					const row = document.createElement("tr");
+					row.setAttribute('data-record-id', record.module_record_id);
+					row.setAttribute('data-person-name', record.cf__com_i3uqdn_person_name || "");
+					row.setAttribute('data-person-email', record.cf__com_i3uqdn_person_email || "");
+					row.setAttribute('data-phone-number', record.cf__com_i3uqdn_phone_number || "");
+
+					function createToggleCell(field, value) {
+						originalRecords[record.module_record_id][field] = value;
+
+						const cell = document.createElement("td");
+						cell.classList.add('toggle-cell');
+
+						const toggleFieldMap = {
+							'estimate': 'cf__com_i3uqdn_estimates',
+							'salesorder': 'cf__com_i3uqdn_sales_orders',
+							'invoice': 'cf__com_i3uqdn_invoices',
+							'creditnote': 'cf__com_i3uqdn_credit_notes'
+						};
+
+						const specificField = toggleFieldMap[currentModule];
+						const initialState = record[specificField] === true || record[specificField] === 'true';
+
+						if (initialState) {
+							cell.classList.add('active');
+							cell.textContent = "X";
+						} else {
+							cell.textContent = "";
+						}
+
+						cell.addEventListener("click", function () {
+							if (cell.classList.contains('active')) {
+								cell.classList.remove('active');
+								cell.textContent = "";
+							} else {
+								cell.classList.add('active');
+								cell.textContent = "X";
+							}
+
+							const isModified = cell.classList.contains('active') !== originalRecords[record.module_record_id][field];
+
+							modifiedRecords[record.module_record_id] = modifiedRecords[record.module_record_id] || {};
+
+							if (isModified) {
+								modifiedRecords[record.module_record_id][specificField] = cell.classList.contains('active');
+								row.classList.add('modified-row');
+							} else {
+								delete modifiedRecords[record.module_record_id][specificField];
+
+								if (Object.keys(modifiedRecords[record.module_record_id]).length === 0) {
+									delete modifiedRecords[record.module_record_id];
+									row.classList.remove('modified-row');
+								}
+							}
+						});
+
+						return cell;
+					}
+
+					const row_person_name = document.createElement("td");
+					row_person_name.textContent = record.cf__com_i3uqdn_person_name || "-";
+					row.appendChild(row_person_name);
+
+					const row_person_email = document.createElement("td");
+					row_person_email.textContent = record.cf__com_i3uqdn_person_email || "-";
+					row.appendChild(row_person_email);
+
+					// Add phone number cell
+					const row_phone_number = document.createElement("td");
+					row_phone_number.textContent = record.cf__com_i3uqdn_phone_number || "-";
+					row.appendChild(row_phone_number);
+
+					const toggleFieldMap = {
+						'estimate': 'cf__com_i3uqdn_estimates',
+						'salesorder': 'cf__com_i3uqdn_sales_orders',
+						'invoice': 'cf__com_i3uqdn_invoices',
+						'creditnote': 'cf__com_i3uqdn_credit_notes'
+					};
+
+					const specificField = toggleFieldMap[currentModule];
+					row.appendChild(createToggleCell(specificField, record[specificField]));
+
+					return row;
+				}
+
+				jsonData.module_records.forEach(record => {
+					const row = createTableRow(record);
+					tableBody.appendChild(row);
+				});
+
+				setupPagination();
+
+				// Update Record Function
+				function update() {
+					let updatePromises = [];
+
+					Object.keys(modifiedRecords).forEach(recordId => {
+						let payload = modifiedRecords[recordId];
+
+						var options1 = {
+							url: `${orgEndpoint}/cm__com_i3uqdn_customer_contact_matrix/${recordId}?organization_id=${orgId}`,
+							method: "PUT",
+							body: {
+								mode: 'raw',
+								raw: payload
+							},
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						updatePromises.push(
+							ZFAPPS.request(options1)
+								.then(function (value) {
+									return JSON.parse(value.data.body);
+								})
+								.catch(function (err) {
+									console.log("Update Error : ", err);
+									throw err;
+								})
+						);
+					});
+
+					Promise.all(updatePromises)
+						.then(() => {
+							customAlert.success('Records updated successfully');
+							modifiedRecords = {};
+						})
+						.catch(err => {
+							customAlert.error('Error updating records: ' + (err.message || 'Unknown error'));
+						});
+				}
+
+				// Add this function to fetch email template data from Zoho API
+				async function fetchEmailTemplateData() {
+					try {
+						const apiEndpointMap = {
+							'estimate': 'estimates',
+							'salesorder': 'salesorders',
+							'invoice': 'invoices',
+							'creditnote': 'creditnotes'
+						};
+
+						const endpoint = apiEndpointMap[currentModule] || (currentModule + 's');
+
+						const options = {
+							url: `${orgEndpoint}/${endpoint}/${moduleRecordId}/email?organization_id=${orgId}`,
+							method: "GET",
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						const response = await ZFAPPS.request(options);
+						const responseData = JSON.parse(response.data.body);
+
+						const emailData = responseData.data || responseData;
+						const templateData = Array.isArray(emailData) ? emailData[0] : emailData;
+
+						const plainTextBody = convertHtmlToPlainText(templateData.body || '');
+
+						return {
+							ccMails: Array.isArray(templateData.cc_mails_list)
+								? templateData.cc_mails_list.map(mail => mail.email).join(', ')
+								: (templateData.cc_mails_list?.email || ''),
+							bccMails: Array.isArray(templateData.bcc_mails)
+								? templateData.bcc_mails.map(mail => mail.email).join(', ')
+								: (templateData.bcc_mails?.email || ''),
+							subject: templateData.subject || '',
+							body: plainTextBody
+						};
+					} catch (err) {
+						console.error("Error fetching email template data:", err);
+						return null;
+					}
+				}
+
+				// Converting To Email in Html Format
+				function convertHtmlToPlainText(htmlString) {
+					const tempDiv = document.createElement('div');
+					tempDiv.innerHTML = htmlString;
+
+					tempDiv.querySelectorAll('style, script').forEach(el => el.remove());
+
+					tempDiv.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+
+					tempDiv.querySelectorAll('p').forEach(p => {
+						const text = document.createTextNode('\n' + p.innerText + '\n');
+						p.replaceWith(text);
+					});
+
+					return tempDiv.innerText.trim();
+				}
+
+
+				// Quick Send Mail
+				async function quickSendMail() {
+					Promise.allSettled([
+						ZFAPPS.invoke('REFRESH_DATA', 'salesorders'),
+						ZFAPPS.invoke('REFRESH_DATA', 'quotes'),
+						ZFAPPS.invoke('REFRESH_DATA', 'invoices'),
+						ZFAPPS.invoke('REFRESH_DATA', 'creditnotes')
+					]).then(() => {
+						// console.log('Refresh operations completed');
+					});
+
+					let emailList = [];
+					const rows = document.getElementById("table-body").getElementsByTagName('tr');
+
+					for (let row of rows) {
+						const toggleCell = row.querySelector('.toggle-cell');
+						if (toggleCell && toggleCell.classList.contains('active')) {
+							const personEmail = row.getAttribute('data-person-email');
+							if (personEmail && personEmail !== "-") {
+								emailList.push(personEmail);
+							}
+						}
+					}
+
+					const hasModifications = Object.keys(modifiedRecords).length > 0;
+
+					if (emailList.length === 0 && !hasModifications) {
+						customAlert.warning('Please select at least one recipient or make changes to update.');
+						return;
+					}
+
+					if (emailList.length === 0 && hasModifications) {
+						update();
+						return;
+					}
+
+					update();
+
+					loadingOverlay.style.display = 'flex';
+
+					try {
+						const templateData = await fetchEmailTemplateData();
+
+						let emailCc = '';
+						let emailBcc = '';
+						let emailSubject = '';
+						let emailBody = '';
+						const statusOfMail = "Sent";
+
+						if (templateData) {
+							emailCc = templateData.ccMails;
+							emailBcc = templateData.bccMails;
+							emailSubject = templateData.subject;
+							emailBody = templateData.body;
+						}
+
+						const currentDateTime = new Date().toLocaleString('en-GB', {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit',
+							second: '2-digit',
+							hour12: true
+						}).toUpperCase();
+
+						let metaData = [{
+							sent_time: currentDateTime,
+							to_mail_ids: emailList,
+							cc_mail_ids: emailCc ? [emailCc] : [],
+							bcc_mail_ids: emailBcc ? [emailBcc] : [],
+							subject: emailSubject,
+							status: statusOfMail
+						}];
+
+						let url = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/email?organization_id=${orgId}`;
+						const metadataUrl = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/metadata/pu_com_i3uqdn?organization_id=${orgId}`;
+
+						const sendMail = {
+							url: url,
+							method: "POST",
+							body: {
+								mode: 'raw',
+								raw: JSON.stringify({
+									to_mail_ids: emailList,
+									cc_mail_ids: emailCc,
+									bcc_mail_ids: emailBcc,
+									subject: emailSubject,
+									body: emailBody
+								})
+							},
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						const emailResponse = await ZFAPPS.request(sendMail);
+						let responseJSON = JSON.parse(emailResponse.data.body);
+
+						// Metadata process
+						const getMetadataOptions = {
+							url: metadataUrl,
+							method: "GET",
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						const existingMetadataResponse = await ZFAPPS.request(getMetadataOptions);
+						const existingMetadataJSON = JSON.parse(existingMetadataResponse.data.body);
+						let existingRecordsList = [];
+
+						if (existingMetadataJSON && existingMetadataJSON.metadata && existingMetadataJSON.metadata.data && existingMetadataJSON.metadata.data.JSONString) {
+							try {
+								const parsedJSONString = JSON.parse(existingMetadataJSON.metadata.data.JSONString);
+								if (parsedJSONString && Array.isArray(parsedJSONString.RecordsList)) {
+									existingRecordsList = parsedJSONString.RecordsList;
+								}
+							} catch (e) {
+								console.warn("Failed to parse existing JSONString. Initializing with empty list.", e);
+							}
+						}
+
+						const updatedRecordsList = metaData.concat(existingRecordsList);
+
+						let updatedLogs = {
+							RecordsList: updatedRecordsList
+						};
+
+						const metadataOptions = {
+							url: metadataUrl,
+							method: "PUT",
+							body: {
+								mode: 'raw',
+								raw: JSON.stringify({ JSONString: JSON.stringify(updatedLogs) })
+							},
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						const metadataResponse = await ZFAPPS.request(metadataOptions);
+						let metadataResponseJSON = JSON.parse(metadataResponse.data.body);
+
+						customAlert.success('Email sent successfully!');
+						loadingOverlay.style.display = 'none';
+
+					} catch (error) {
+						console.error("Error in quickSendMail:", error);
+						customAlert.error('Failed to send email or update metadata. Please try again.');
+						loadingOverlay.style.display = 'none';
+					}
+				}
+
+				window.addEventListener('beforeunload', function (e) {
+					if (Object.keys(modifiedRecords).length > 0) {
+						const confirmationMessage = 'You have unsaved changes. Are you sure you want to leave?';
+						(e || window.event).returnValue = confirmationMessage;
+						return confirmationMessage;
+					}
+				});
+
+				// Cancel Changes Function
+				function cancelChanges() {
+					if (Object.keys(modifiedRecords).length === 0) {
+						customAlert.info('No changes to clear');
+						return;
+					}
+
+					const rows = tableBody.getElementsByTagName('tr');
+					for (let row of rows) {
+						const recordId = row.getAttribute('data-record-id');
+						if (modifiedRecords[recordId]) {
+							const toggleCell = row.querySelector('.toggle-cell');
+
+							const toggleFieldMap = {
+								'estimate': 'cf__com_i3uqdn_estimates',
+								'salesorder': 'cf__com_i3uqdn_sales_orders',
+								'invoice': 'cf__com_i3uqdn_invoices',
+								'creditnote': 'cf__com_i3uqdn_credit_notes'
+							};
+
+							const specificField = toggleFieldMap[currentModule];
+							const originalState = originalRecords[recordId][specificField];
+
+							if (originalState) {
+								toggleCell.classList.add('active');
+								toggleCell.textContent = "X";
+							} else {
+								toggleCell.classList.remove('active');
+								toggleCell.textContent = "";
+							}
+
+							row.classList.remove('modified-row');
+						}
+					}
+
+					modifiedRecords = {};
+					customAlert.success('Changes cleared successfully');
+				}
+
+				const emailPopup = document.getElementById('email-popup');
+				const closePopup = document.getElementById('close-popup');
+				const cancelEmail = document.getElementById('cancel-email');
+				const sendEmail = document.getElementById('send-email');
+				const emailFormTitle = document.getElementById('email-form-title');
+				const emailSubject = document.getElementById('email-subject');
+				const emailBody = document.getElementById('email-body');
+				const fromEmail = document.getElementById('from-email');
+
+				const toRecipientsContainer = document.getElementById('to-recipients');
+				const ccRecipientsContainer = document.getElementById('cc-recipients');
+				const bccRecipientsContainer = document.getElementById('bcc-recipients');
+				const toEmailInput = document.getElementById('to-email-input');
+				const ccEmailInput = document.getElementById('cc-email-input');
+				const bccEmailInput = document.getElementById('bcc-email-input');
+				let attachments = [];
+
+				fromEmail.value = userEmail;
+				fromEmail.readOnly = true;
+				fromEmail.classList.add('email-input-readonly');
+
+				function isValidEmail(email) {
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					return emailRegex.test(email);
+				}
+
+				function addRecipientChip(email, container) {
+					if (!email || !isValidEmail(email)) return false;
+
+					const existingChips = container.querySelectorAll('.recipient-chip-text');
+					for (const chip of existingChips) {
+						if (chip.textContent === email) return false;
+					}
+
+					const chip = document.createElement('div');
+					chip.className = 'recipient-chip';
+
+					const chipText = document.createElement('span');
+					chipText.className = 'recipient-chip-text';
+					chipText.textContent = email;
+
+					const removeBtn = document.createElement('span');
+					removeBtn.className = 'recipient-chip-remove';
+					removeBtn.textContent = '×';
+					removeBtn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						chip.remove();
+					});
+
+					chip.appendChild(chipText);
+					chip.appendChild(removeBtn);
+					container.appendChild(chip);
+
+					return true;
+				}
+
+				function setupRecipientInput(inputEl, containerEl) {
+					inputEl.addEventListener('keydown', (e) => {
+						if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
+							e.preventDefault();
+							const email = inputEl.value.trim().replace(/[,;]$/, '');
+
+							if (addRecipientChip(email, containerEl)) {
+								inputEl.value = '';
+							} else if (email) {
+								customAlert.warning('Please enter a valid email address');
+							}
+						} else if (e.key === 'Backspace' && inputEl.value === '') {
+							const lastChip = containerEl.lastElementChild;
+							if (lastChip) lastChip.remove();
+						}
+					});
+
+					inputEl.addEventListener('blur', () => {
+						const email = inputEl.value.trim();
+						if (email) {
+							if (addRecipientChip(email, containerEl)) {
+								inputEl.value = '';
+							} else {
+								customAlert.warning('Please enter a valid email address');
+							}
+						}
+					});
+				}
+
+				setupRecipientInput(toEmailInput, toRecipientsContainer);
+				setupRecipientInput(ccEmailInput, ccRecipientsContainer);
+				setupRecipientInput(bccEmailInput, bccRecipientsContainer);
+
+				// Popup Function
+				function showEmailPopup() {
+					toRecipientsContainer.innerHTML = '';
+					ccRecipientsContainer.innerHTML = '';
+					bccRecipientsContainer.innerHTML = '';
+
+					const selectedEmails = [];
+					const rows = tableBody.getElementsByTagName('tr');
+
+					for (let row of rows) {
+						const toggleCell = row.querySelector('.toggle-cell');
+						if (toggleCell.classList.contains('active')) {
+							const personName = row.getAttribute('data-person-name');
+							const personEmail = row.getAttribute('data-person-email');
+
+							if (personEmail && personEmail !== "-") {
+								selectedEmails.push({
+									name: personName,
+									email: personEmail
+								});
+							}
+						}
+					}
+
+					if (selectedEmails.length === 0) {
+						customAlert.warning('Please select at least one recipient by marking the checkbox.');
+						return;
+					}
+
+					selectedEmails.forEach(recipient => {
+						addRecipientChip(recipient.email, toRecipientsContainer);
+					});
+
+					const moduleDisplayName = currentModuleConfig.displayName.slice(0, -1);
+					emailSubject.value = `${moduleDisplayName} #${moduleNumber} for ${vendorName}`;
+					emailBody.value = `Dear Customer,\n\nPlease find attached your ${moduleDisplayName.toLowerCase()} #${moduleNumber}.\n\nThank you for your business!\n\nBest regards,\n${userName}`;
+
+					emailFormTitle.textContent = `Send ${moduleDisplayName}`;
+
+					emailPopup.style.display = 'flex';
+				}
+
+				function getRecipientsFromContainer(container) {
+					const emails = [];
+					const recipients = container.querySelectorAll('.recipient-chip-text');
+					recipients.forEach(recipient => {
+						emails.push(recipient.textContent);
+					});
+					return emails;
+				}
+
+				function hideEmailPopup() {
+					emailPopup.style.display = 'none';
+				}
+
+				function showLoading() {
+					loadingOverlay.style.display = 'flex';
+				}
+
+				function hideLoading() {
+					loadingOverlay.style.display = 'none';
+				}
+
+				// Send Custom Mail Function
+				function sendEmailToRecipients() {
+					Promise.allSettled([
+						ZFAPPS.invoke('REFRESH_DATA', 'salesorders'),
+						ZFAPPS.invoke('REFRESH_DATA', 'quotes'),
+						ZFAPPS.invoke('REFRESH_DATA', 'invoices'),
+						ZFAPPS.invoke('REFRESH_DATA', 'creditnotes')
+					]).then(() => {
+						// console.log('Refresh operations completed');
+					});
+
+					showLoading();
+
+					const toEmails = getRecipientsFromContainer(toRecipientsContainer);
+					const ccEmails = getRecipientsFromContainer(ccRecipientsContainer);
+					const bccEmails = getRecipientsFromContainer(bccRecipientsContainer);
+					const statusOfMail = "Sent";
+
+					if (toEmails.length === 0) {
+						customAlert.warning('Please add at least one recipient.');
+						hideLoading();
+						return;
+					}
+
+					if (!emailSubject.value.trim()) {
+						customAlert.warning('Subject is required');
+						hideLoading();
+						return;
+					}
+
+					if (!emailBody.value.trim()) {
+						customAlert.warning('Message body is required');
+						hideLoading();
+						return;
+					}
+
+					const currentDateTime = new Date().toLocaleString('en-GB', {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit',
+						second: '2-digit',
+						hour12: true
+					}).toUpperCase();
+
+					let metaData = [{
+						sent_time: currentDateTime,
+						to_mail_ids: toEmails,
+						cc_mail_ids: ccEmails,
+						bcc_mail_ids: bccEmails,
+						subject: emailSubject.value,
+						status: statusOfMail
+					}];
+
+					const url = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/email?organization_id=${orgId}`;
+					const metadataUrl = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/metadata/pu_com_i3uqdn?organization_id=${orgId}`;
+
+					const emailPayload = {
+						to_mail_ids: toEmails,
+						cc_mail_ids: ccEmails,
+						bcc_mail_ids: bccEmails,
+						subject: emailSubject.value,
+						body: emailBody.value
+					};
+
+					const processAttachments = async () => {
+						return sendEmail(emailPayload);
+					};
+
+					const sendEmail = async (payload) => {
+						try {
+							const sendMailOptions = {
+								url: url,
+								method: "POST",
+								body: {
+									mode: 'raw',
+									raw: JSON.stringify(payload)
+								},
+								connection_link_name: 'zohobookscontacxmatrix'
+							};
+
+
+							const emailResponse = await ZFAPPS.request(sendMailOptions);
+							let responseJSON = JSON.parse(emailResponse.data.body);
+
+							const getMetadataOptions = {
+								url: metadataUrl,
+								method: "GET",
+								connection_link_name: 'zohobookscontacxmatrix'
+							};
+
+							const existingMetadataResponse = await ZFAPPS.request(getMetadataOptions);
+							const existingMetadataJSON = JSON.parse(existingMetadataResponse.data.body);
+							let existingRecordsList = [];
+
+							if (existingMetadataJSON && existingMetadataJSON.metadata && existingMetadataJSON.metadata.data && existingMetadataJSON.metadata.data.JSONString) {
+								try {
+									const parsedJSONString = JSON.parse(existingMetadataJSON.metadata.data.JSONString);
+									if (parsedJSONString && Array.isArray(parsedJSONString.RecordsList)) {
+										existingRecordsList = parsedJSONString.RecordsList;
+									}
+								} catch (e) {
+									console.warn("Failed to parse existing JSONString. Initializing with empty list.", e);
+								}
+							}
+
+							const updatedRecordsList = metaData.concat(existingRecordsList);
+
+							let updatedLogs = {
+								RecordsList: updatedRecordsList
+							};
+
+							const metadataOptions = {
+								url: metadataUrl,
+								method: "PUT",
+								body: {
+									mode: 'raw',
+									raw: JSON.stringify({ JSONString: JSON.stringify(updatedLogs) })
+								},
+								connection_link_name: 'zohobookscontacxmatrix'
+							};
+
+							const metadataResponse = await ZFAPPS.request(metadataOptions);
+							let metadataResponseJSON = JSON.parse(metadataResponse.data.body);
+							hideEmailPopup();
+							customAlert.success('Email sent successfully!');
+							hideLoading();
+						} catch (err) {
+							console.error('Email/Metadata error - Full error:', JSON.stringify(err));
+							customAlert.error('Failed to send email or update metadata: ' + (err.message || 'Unknown error'));
+							hideLoading();
+						}
+					};
+					processAttachments();
+				}
+
+				closePopup.addEventListener('click', hideEmailPopup);
+				cancelEmail.addEventListener('click', hideEmailPopup);
+				sendEmail.addEventListener('click', sendEmailToRecipients);
+
+				window.showEmailPopup = showEmailPopup;
+
+				const updateBtn = document.getElementById("update-btn");
+				const quickSendBtn = document.getElementById("quick-send-btn");
+				const editSendBtn = document.getElementById("edit-send-btn");
+				const cancelBtn = document.getElementById("cancel-btn");
+
+				updateBtn.addEventListener("click", update);
+				quickSendBtn.addEventListener("click", quickSendMail);
+				editSendBtn.addEventListener("click", showEmailPopup);
+				cancelBtn.addEventListener("click", cancelChanges);
+
+			} catch (err) {
+				console.error('Error fetching records:', err);
+				customAlert.error('Error fetching records: ' + (err.message || 'Unknown error'));
+			}
+		});
+	</script>
+</body>
+
+</html>
