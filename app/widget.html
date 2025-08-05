@@ -1393,8 +1393,8 @@
 								mode: 'raw',
 								raw: JSON.stringify({
 									to_mail_ids: emailList,
-									cc_mail_ids: emailCc,
-									bcc_mail_ids: emailBcc,
+									cc_mail_ids: emailCc ? emailCc.split(',').map(email => email.trim()) : [],
+									bcc_mail_ids: emailBcc ? emailBcc.split(',').map(email => email.trim()) : [],
 									subject: emailSubject,
 									body: emailBody
 								})
