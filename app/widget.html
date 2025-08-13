@@ -768,6 +768,10 @@
 				<label for="email-body">Message</label>
 				<textarea id="email-body" class="email-textarea" required></textarea>
 			</div>
+			<div class="form-attachments">
+				<label for="attachments">Attachments</label>
+				<input id="attachments" type="file" class="file-attachments" multiple />
+			</div>
 			<div class="form-footer">
 				<button class="form-btn cancel-email-btn" id="cancel-email">Cancel</button>
 				<button class="form-btn send-email-btn" id="send-email">Send</button>
@@ -794,7 +798,7 @@
 		</div>
 	</div>
 
-	<script src="https://js.zohostatic.com/zohofinance/v1/zf_sdk.js"></script>
+	<script src="https://js.zohostatic.com/zohofinance/v1.3/zf_sdk.js"></script>
 	<script>
 		ZFAPPS.extension.init().then(async function (App) {
 			function setupPagination() {
@@ -936,22 +940,22 @@
 				'estimate': {
 					displayName: 'Estimates',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Estimates'],
-					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_estimates']
+					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_estimates']
 				},
 				'salesorder': {
 					displayName: 'Sales Orders',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Sales Order'],
-					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_sales_orders']
+					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_sales_orders']
 				},
 				'invoice': {
 					displayName: 'Invoices',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Invoices'],
-					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_invoices']
+					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_invoices']
 				},
 				'creditnote': {
 					displayName: 'Credit Notes',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Credit Notes'],
-					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_credit_notes']
+					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_credit_notes']
 				}
 			};
 
@@ -1094,10 +1098,10 @@
 			vendorNameInput.value = vendorName;
 
 			const options = {
-				url: `${orgEndpoint}/cm__com_i3uqdn_customer_contact_matrix?organization_id=${orgId}`,
+				url: `${orgEndpoint}/cm_customer_contact_matrix?organization_id=${orgId}`,
 				method: "GET",
 				url_query: [{
-					key: 'cf__com_i3uqdn_customer',
+					key: 'cf_customer',
 					value: customerId
 				}],
 				connection_link_name: 'zohobookscontacxmatrix'
@@ -1120,9 +1124,9 @@
 
 					const row = document.createElement("tr");
 					row.setAttribute('data-record-id', record.module_record_id);
-					row.setAttribute('data-person-name', record.cf__com_i3uqdn_person_name || "");
-					row.setAttribute('data-person-email', record.cf__com_i3uqdn_person_email || "");
-					row.setAttribute('data-phone-number', record.cf__com_i3uqdn_phone_number || "");
+					row.setAttribute('data-person-name', record.cf_person_name || "");
+					row.setAttribute('data-person-email', record.cf_person_email || "");
+					row.setAttribute('data-phone-number', record.cf_phone_number || "");
 
 					function createToggleCell(field, value) {
 						originalRecords[record.module_record_id][field] = value;
@@ -1131,10 +1135,10 @@
 						cell.classList.add('toggle-cell');
 
 						const toggleFieldMap = {
-							'estimate': 'cf__com_i3uqdn_estimates',
-							'salesorder': 'cf__com_i3uqdn_sales_orders',
-							'invoice': 'cf__com_i3uqdn_invoices',
-							'creditnote': 'cf__com_i3uqdn_credit_notes'
+							'estimate': 'cf_estimates',
+							'salesorder': 'cf_sales_orders',
+							'invoice': 'cf_invoices',
+							'creditnote': 'cf_credit_notes'
 						};
 
 						const specificField = toggleFieldMap[currentModule];
@@ -1177,23 +1181,23 @@
 					}
 
 					const row_person_name = document.createElement("td");
-					row_person_name.textContent = record.cf__com_i3uqdn_person_name || "-";
+					row_person_name.textContent = record.cf_person_name || "-";
 					row.appendChild(row_person_name);
 
 					const row_person_email = document.createElement("td");
-					row_person_email.textContent = record.cf__com_i3uqdn_person_email || "-";
+					row_person_email.textContent = record.cf_person_email || "-";
 					row.appendChild(row_person_email);
 
 					// Add phone number cell
 					const row_phone_number = document.createElement("td");
-					row_phone_number.textContent = record.cf__com_i3uqdn_phone_number || "-";
+					row_phone_number.textContent = record.cf_phone_number || "-";
 					row.appendChild(row_phone_number);
 
 					const toggleFieldMap = {
-						'estimate': 'cf__com_i3uqdn_estimates',
-						'salesorder': 'cf__com_i3uqdn_sales_orders',
-						'invoice': 'cf__com_i3uqdn_invoices',
-						'creditnote': 'cf__com_i3uqdn_credit_notes'
+						'estimate': 'cf_estimates',
+						'salesorder': 'cf_sales_orders',
+						'invoice': 'cf_invoices',
+						'creditnote': 'cf_credit_notes'
 					};
 
 					const specificField = toggleFieldMap[currentModule];
@@ -1217,7 +1221,7 @@
 						let payload = modifiedRecords[recordId];
 
 						var options1 = {
-							url: `${orgEndpoint}/cm__com_i3uqdn_customer_contact_matrix/${recordId}?organization_id=${orgId}`,
+							url: `${orgEndpoint}/cm_customer_contact_matrix/${recordId}?organization_id=${orgId}`,
 							method: "PUT",
 							body: {
 								mode: 'raw',
@@ -1478,10 +1482,10 @@
 							const toggleCell = row.querySelector('.toggle-cell');
 
 							const toggleFieldMap = {
-								'estimate': 'cf__com_i3uqdn_estimates',
-								'salesorder': 'cf__com_i3uqdn_sales_orders',
-								'invoice': 'cf__com_i3uqdn_invoices',
-								'creditnote': 'cf__com_i3uqdn_credit_notes'
+								'estimate': 'cf_estimates',
+								'salesorder': 'cf_sales_orders',
+								'invoice': 'cf_invoices',
+								'creditnote': 'cf_credit_notes'
 							};
 
 							const specificField = toggleFieldMap[currentModule];
@@ -1655,141 +1659,147 @@
 					loadingOverlay.style.display = 'none';
 				}
 
-				// Send Custom Mail Function
-				function sendEmailToRecipients() {
+				// Send Mail Function
+				async function sendEmailToRecipients() {
 					Promise.allSettled([
 						ZFAPPS.invoke('REFRESH_DATA', 'salesorders'),
 						ZFAPPS.invoke('REFRESH_DATA', 'quotes'),
 						ZFAPPS.invoke('REFRESH_DATA', 'invoices'),
 						ZFAPPS.invoke('REFRESH_DATA', 'creditnotes')
-					]).then(() => {
-						// console.log('Refresh operations completed');
-					});
+					]).catch(() => { });
 
 					showLoading();
 
-					const toEmails = getRecipientsFromContainer(toRecipientsContainer);
-					const ccEmails = getRecipientsFromContainer(ccRecipientsContainer);
-					const bccEmails = getRecipientsFromContainer(bccRecipientsContainer);
-					const statusOfMail = "Sent";
+					try {
+						const toEmails = getRecipientsFromContainer(toRecipientsContainer);
+						const ccEmails = getRecipientsFromContainer(ccRecipientsContainer);
+						const bccEmails = getRecipientsFromContainer(bccRecipientsContainer);
+						const statusOfMail = "Sent";
 
-					if (toEmails.length === 0) {
-						customAlert.warning('Please add at least one recipient.');
-						hideLoading();
-						return;
-					}
+						if (toEmails.length === 0) {
+							customAlert.warning('Please add at least one recipient.');
+							hideLoading(); return;
+						}
+						if (!emailSubject.value.trim()) {
+							customAlert.warning('Subject is required');
+							hideLoading(); return;
+						}
+						if (!emailBody.value.trim()) {
+							customAlert.warning('Message body is required');
+							hideLoading(); return;
+						}
 
-					if (!emailSubject.value.trim()) {
-						customAlert.warning('Subject is required');
-						hideLoading();
-						return;
-					}
+						const currentDateTime = new Date().toLocaleString('en-GB', {
+							year: 'numeric', month: '2-digit', day: '2-digit',
+							hour: '2-digit', minute: '2-digit', second: '2-digit',
+							hour12: true
+						}).toUpperCase();
 
-					if (!emailBody.value.trim()) {
-						customAlert.warning('Message body is required');
-						hideLoading();
-						return;
-					}
+						let metaData = [{
+							sent_time: currentDateTime,
+							to_mail_ids: toEmails,
+							cc_mail_ids: ccEmails,
+							bcc_mail_ids: bccEmails,
+							subject: emailSubject.value,
+							status: statusOfMail
+						}];
 
-					const currentDateTime = new Date().toLocaleString('en-GB', {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit',
-						hour12: true
-					}).toUpperCase();
+						const url = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/email?organization_id=${orgId}`;
+						const metadataUrl = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/metadata/pu_com_i3uqdn?organization_id=${orgId}`;
 
-					let metaData = [{
-						sent_time: currentDateTime,
-						to_mail_ids: toEmails,
-						cc_mail_ids: ccEmails,
-						bcc_mail_ids: bccEmails,
-						subject: emailSubject.value,
-						status: statusOfMail
-					}];
+						const emailPayload = {
+							to_mail_ids: toEmails,
+							cc_mail_ids: ccEmails,
+							bcc_mail_ids: bccEmails,
+							subject: emailSubject.value,
+							body: emailBody.value
+						};
 
-					const url = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/email?organization_id=${orgId}`;
-					const metadataUrl = `${orgEndpoint}/${getModuleApiEndpoint(currentModule)}/${moduleRecordId}/metadata/pu_com_i3uqdn?organization_id=${orgId}`;
+						// Prepare attachments
+						const fileInput = document.getElementById('attachments');
+						const files = (fileInput && fileInput.files) ? fileInput.files : [];
+						const attachmentsArr = [];
+						for (let i = 0; i < files.length; i++) {
+							attachmentsArr.push({
+								key: 'attachments',
+								value: files[i]
+							});
+						}
 
-					const emailPayload = {
-						to_mail_ids: toEmails,
-						cc_mail_ids: ccEmails,
-						bcc_mail_ids: bccEmails,
-						subject: emailSubject.value,
-						body: emailBody.value
-					};
-
-					const processAttachments = async () => {
-						return sendEmail(emailPayload);
-					};
-
-					const sendEmail = async (payload) => {
-						try {
-							const sendMailOptions = {
+						let sendMailOptions;
+						if (attachmentsArr.length > 0) {
+							sendMailOptions = {
+								url: url,
+								method: "POST",
+								body: {
+									mode: 'formdata',
+									formdata: [
+										{ key: 'JSONString', value: JSON.stringify(emailPayload) }
+									]
+								},
+								connection_link_name: 'zohobookscontacxmatrix',
+								attachments: attachmentsArr
+							};
+						} else {
+							sendMailOptions = {
 								url: url,
 								method: "POST",
 								body: {
 									mode: 'raw',
-									raw: JSON.stringify(payload)
+									raw: JSON.stringify(emailPayload)
 								},
 								connection_link_name: 'zohobookscontacxmatrix'
 							};
-
-
-							const emailResponse = await ZFAPPS.request(sendMailOptions);
-							let responseJSON = JSON.parse(emailResponse.data.body);
-
-							const getMetadataOptions = {
-								url: metadataUrl,
-								method: "GET",
-								connection_link_name: 'zohobookscontacxmatrix'
-							};
-
-							const existingMetadataResponse = await ZFAPPS.request(getMetadataOptions);
-							const existingMetadataJSON = JSON.parse(existingMetadataResponse.data.body);
-							let existingRecordsList = [];
-
-							if (existingMetadataJSON && existingMetadataJSON.metadata && existingMetadataJSON.metadata.data && existingMetadataJSON.metadata.data.JSONString) {
-								try {
-									const parsedJSONString = JSON.parse(existingMetadataJSON.metadata.data.JSONString);
-									if (parsedJSONString && Array.isArray(parsedJSONString.RecordsList)) {
-										existingRecordsList = parsedJSONString.RecordsList;
-									}
-								} catch (e) {
-									console.warn("Failed to parse existing JSONString. Initializing with empty list.", e);
-								}
-							}
-
-							const updatedRecordsList = metaData.concat(existingRecordsList);
-
-							let updatedLogs = {
-								RecordsList: updatedRecordsList
-							};
-
-							const metadataOptions = {
-								url: metadataUrl,
-								method: "PUT",
-								body: {
-									mode: 'raw',
-									raw: JSON.stringify({ JSONString: JSON.stringify(updatedLogs) })
-								},
-								connection_link_name: 'zohobookscontacxmatrix'
-							};
-
-							const metadataResponse = await ZFAPPS.request(metadataOptions);
-							let metadataResponseJSON = JSON.parse(metadataResponse.data.body);
-							hideEmailPopup();
-							customAlert.success('Email sent successfully!');
-							hideLoading();
-						} catch (err) {
-							console.error('Email/Metadata error - Full error:', JSON.stringify(err));
-							customAlert.error('Failed to send email or update metadata: ' + (err.message || 'Unknown error'));
-							hideLoading();
 						}
-					};
-					processAttachments();
+
+						const emailResponse = await ZFAPPS.request(sendMailOptions);
+						let responseJSON;
+						try { responseJSON = JSON.parse(emailResponse.data.body); } catch (e) { responseJSON = emailResponse.data.body; }
+
+						const getMetadataOptions = {
+							url: metadataUrl,
+							method: "GET",
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+						const existingMetadataResponse = await ZFAPPS.request(getMetadataOptions);
+						const existingMetadataJSON = JSON.parse(existingMetadataResponse.data.body || '{}');
+						let existingRecordsList = [];
+
+						if (existingMetadataJSON && existingMetadataJSON.metadata && existingMetadataJSON.metadata.data && existingMetadataJSON.metadata.data.JSONString) {
+							try {
+								const parsedJSONString = JSON.parse(existingMetadataJSON.metadata.data.JSONString);
+								if (parsedJSONString && Array.isArray(parsedJSONString.RecordsList)) {
+									existingRecordsList = parsedJSONString.RecordsList;
+								}
+							} catch (e) {
+								console.warn("Failed to parse existing JSONString. Initializing with empty list.", e);
+							}
+						}
+
+						const updatedRecordsList = metaData.concat(existingRecordsList);
+						const metadataOptions = {
+							url: metadataUrl,
+							method: "PUT",
+							body: {
+								mode: 'raw',
+								raw: JSON.stringify({ JSONString: JSON.stringify({ RecordsList: updatedRecordsList }) })
+							},
+							connection_link_name: 'zohobookscontacxmatrix'
+						};
+
+						await ZFAPPS.request(metadataOptions);
+
+						hideEmailPopup();
+						customAlert.success('Email sent successfully!');
+						hideLoading();
+					} catch (err) {
+						console.error('Email/Metadata error - Full error:', err);
+						if (err && err.data && err.data.body) {
+							console.error('Server response body:', err.data.body);
+						}
+						customAlert.error('Failed to send email or update metadata: ' + (err.message || 'Unknown error'));
+						hideLoading();
+					}
 				}
 
 				closePopup.addEventListener('click', hideEmailPopup);
