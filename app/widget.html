@@ -470,6 +470,34 @@
 			align-items: center;
 		}
 
+		.form-attachments {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-family: Arial, sans-serif;
+		}
+
+		.form-attachments label {
+			font-weight: bold;
+			color: var(--text-primary);
+		}
+
+		.file-attachments {
+			width: 190px;
+			padding: 8px 18px;
+			border-radius: 25px;
+			border: none;
+			background: rgba(255, 255, 255, 0.1);
+			color: var(--text-primary);
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.file-attachments:hover {
+			background: rgba(255, 255, 255, 0.2);
+		}
+
 		.form-footer {
 			display: flex;
 			justify-content: flex-end;
@@ -940,22 +968,22 @@
 				'estimate': {
 					displayName: 'Estimates',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Estimates'],
-					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_estimates']
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_estimates']
 				},
 				'salesorder': {
 					displayName: 'Sales Orders',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Sales Order'],
-					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_sales_orders']
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_sales_orders']
 				},
 				'invoice': {
 					displayName: 'Invoices',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Invoices'],
-					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_invoices']
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_invoices']
 				},
 				'creditnote': {
 					displayName: 'Credit Notes',
 					headers: ['Person Name', 'Person Email', 'Phone Number', 'Credit Notes'],
-					dataFields: ['cf_person_name', 'cf_person_email', 'cf_phone_number', 'cf_credit_notes']
+					dataFields: ['cf__com_i3uqdn_person_name', 'cf__com_i3uqdn_person_email', 'cf__com_i3uqdn_phone_number', 'cf__com_i3uqdn_credit_notes']
 				}
 			};
 
@@ -1124,9 +1152,9 @@
 
 					const row = document.createElement("tr");
 					row.setAttribute('data-record-id', record.module_record_id);
-					row.setAttribute('data-person-name', record.cf_person_name || "");
-					row.setAttribute('data-person-email', record.cf_person_email || "");
-					row.setAttribute('data-phone-number', record.cf_phone_number || "");
+					row.setAttribute('data-person-name', record.cf__com_i3uqdn_person_name || "");
+					row.setAttribute('data-person-email', record.cf__com_i3uqdn_person_email || "");
+					row.setAttribute('data-phone-number', record.cf__com_i3uqdn_phone_number || "");
 
 					function createToggleCell(field, value) {
 						originalRecords[record.module_record_id][field] = value;
@@ -1135,10 +1163,10 @@
 						cell.classList.add('toggle-cell');
 
 						const toggleFieldMap = {
-							'estimate': 'cf_estimates',
-							'salesorder': 'cf_sales_orders',
-							'invoice': 'cf_invoices',
-							'creditnote': 'cf_credit_notes'
+							'estimate': 'cf__com_i3uqdn_estimates',
+							'salesorder': 'cf__com_i3uqdn_sales_orders',
+							'invoice': 'cf__com_i3uqdn_invoices',
+							'creditnote': 'cf__com_i3uqdn_credit_notes'
 						};
 
 						const specificField = toggleFieldMap[currentModule];
@@ -1181,23 +1209,23 @@
 					}
 
 					const row_person_name = document.createElement("td");
-					row_person_name.textContent = record.cf_person_name || "-";
+					row_person_name.textContent = record.cf__com_i3uqdn_person_name || "-";
 					row.appendChild(row_person_name);
 
 					const row_person_email = document.createElement("td");
-					row_person_email.textContent = record.cf_person_email || "-";
+					row_person_email.textContent = record.cf__com_i3uqdn_person_email || "-";
 					row.appendChild(row_person_email);
 
 					// Add phone number cell
 					const row_phone_number = document.createElement("td");
-					row_phone_number.textContent = record.cf_phone_number || "-";
+					row_phone_number.textContent = record.cf__com_i3uqdn_phone_number || "-";
 					row.appendChild(row_phone_number);
 
 					const toggleFieldMap = {
-						'estimate': 'cf_estimates',
-						'salesorder': 'cf_sales_orders',
-						'invoice': 'cf_invoices',
-						'creditnote': 'cf_credit_notes'
+						'estimate': 'cf__com_i3uqdn_estimates',
+						'salesorder': 'cf__com_i3uqdn_sales_orders',
+						'invoice': 'cf__com_i3uqdn_invoices',
+						'creditnote': 'cf__com_i3uqdn_credit_notes'
 					};
 
 					const specificField = toggleFieldMap[currentModule];
@@ -1482,10 +1510,10 @@
 							const toggleCell = row.querySelector('.toggle-cell');
 
 							const toggleFieldMap = {
-								'estimate': 'cf_estimates',
-								'salesorder': 'cf_sales_orders',
-								'invoice': 'cf_invoices',
-								'creditnote': 'cf_credit_notes'
+								'estimate': 'cf__com_i3uqdn_estimates',
+								'salesorder': 'cf__com_i3uqdn_sales_orders',
+								'invoice': 'cf__com_i3uqdn_invoices',
+								'creditnote': 'cf__com_i3uqdn_credit_notes'
 							};
 
 							const specificField = toggleFieldMap[currentModule];
